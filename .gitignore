@@ -34,8 +34,6 @@ desktop.ini
 .idea/
 *.code-workspace
 
-# Instruction / PRD / internal docs (local only)
-Intruction/
 
 # Assessment / brief files (local only)
 Tech Assesment Indokerja.pdf

@@ -1,4 +1,4 @@
-# IndoKerja.id — Job Application Management Platform
+# IndoKerja.id Job Application Management Platform
 
 A full-stack job application management platform connecting **Job Seekers** and **Companies** in Indonesia. Built with React, Express, Prisma, and PostgreSQL.
 

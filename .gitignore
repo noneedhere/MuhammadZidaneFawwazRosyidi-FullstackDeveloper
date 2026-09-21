@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+.next/
+out/
+coverage/
+
+# Logs
+*.log
+logs/
+
+# Database local files
+*.db
+*.sqlite
+*.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+
+# IDE / Editor
+.vscode/
+.idea/
+*.code-workspace
+
+# Instruction / PRD / internal docs (local only)
+Intruction/
+
+# Assessment / brief files (local only)
+Tech Assesment Indokerja.pdf
+
+# Prisma generated
+backend/prisma/*.db
+backend/prisma/*.db-journal
+
+# Misc
+*.tsbuildinfo
+.cache/

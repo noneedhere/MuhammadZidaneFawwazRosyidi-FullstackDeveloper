@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  JOB_SEEKER
+  COMPANY
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+}
+
+enum JobStatus {
+  OPEN
+  CLOSED
+}
+
+enum ApplicationStatus {
+  APPLIED
+  REVIEWING
+  SHORTLISTED
+  ACCEPTED
+  REJECTED
+}
+
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  password    String
+  fullName    String   @map("full_name")
+  role        Role
+  companyName String?  @map("company_name")
+  phone       String?
+  bio         String?
+  description String?
+  location    String?
+  website     String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  jobs           Job[]
+  applications   Application[]
+  historyChanges ApplicationHistory[] @relation("ChangedByUser")
+
+  @@map("users")
+}
+
+model Job {
+  id           String    @id @default(uuid())
+  title        String
+  description  String
+  requirements String
+  location     String
+  salaryMin    Int       @map("salary_min")
+  salaryMax    Int       @map("salary_max")
+  type         JobType
+  status       JobStatus @default(OPEN)
+  companyId    String    @map("company_id")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  company      User          @relation(fields: [companyId], references: [id], onDelete: Restrict)
+  applications Application[]
+
+  @@index([companyId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("jobs")
+}
+
+model Application {
+  id            String            @id @default(uuid())
+  userId        String            @map("user_id")
+  jobId         String            @map("job_id")
+  currentStatus ApplicationStatus @default(APPLIED) @map("current_status")
+  createdAt     DateTime          @default(now()) @map("created_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
+
+  user    User              @relation(fields: [userId], references: [id], onDelete: Restrict)
+  job     Job               @relation(fields: [jobId], references: [id], onDelete: Restrict)
+  history ApplicationHistory[]
+
+  @@unique([userId, jobId])
+  @@index([userId])
+  @@index([jobId])
+  @@map("applications")
+}
+
+model ApplicationHistory {
+  id             String             @id @default(uuid())
+  applicationId  String             @map("application_id")
+  previousStatus ApplicationStatus? @map("previous_status")
+  newStatus      ApplicationStatus  @map("new_status")
+  changedBy      String             @map("changed_by")
+  changedAt      DateTime           @default(now()) @map("changed_at")
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  changer     User        @relation("ChangedByUser", fields: [changedBy], references: [id], onDelete: Restrict)
+
+  @@index([applicationId])
+  @@index([changedAt])
+  @@map("application_histories")
+}
